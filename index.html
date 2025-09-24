@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AnalyticsFirefly - AI Data Analytics</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/markdown-it/dist/markdown-it.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html-to-pdfmake/browser.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+    <style>
+        .firefly-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .card-shadow {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .upload-area {
+            border: 2px dashed #cbd5e1;
+            transition: all 0.3s ease;
+        }
+
+        .upload-area:hover {
+            border-color: #667eea;
+            background-color: #f8fafc;
+        }
+
+        .upload-area.dragover {
+            border-color: #667eea;
+            background-color: #f1f5f9;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .document-container {
+            position: relative;
+            background: #ffffff;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .document-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(-45deg, transparent 46%, #f0f0f0 46%, #f0f0f0 54%, transparent 54%);
+            z-index: 1;
+        }
+
+        .document-container::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(-45deg, transparent 46%, #e0e0e0 46%, #e0e0e0 54%, transparent 54%);
+            transform: translate(2px, 2px);
+            z-index: 0;
+        }
+
+        .document-content {
+            position: relative;
+            z-index: 2;
+            background: white;
+            padding: 2rem;
+            margin: 0;
+        }
+
+        .page-lines {
+            min-height: 400px;
+        }
+
+        .slide-up {
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px) scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .bounce-in {
+            animation: bounceIn 0.8s ease-out;
+        }
+
+        @keyframes bounceIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.3);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.05);
+            }
+
+            70% {
+                transform: scale(0.9);
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .pulse-glow {
+            animation: pulseGlow 2s ease-in-out infinite;
+        }
+
+        @keyframes pulseGlow {
+
+            0%,
+            100% {
+                box-shadow: 0 0 5px rgba(102, 126, 234, 0.3);
+            }
+
+            50% {
+                box-shadow: 0 0 20px rgba(102, 126, 234, 0.6), 0 0 30px rgba(102, 126, 234, 0.4);
+            }
+        }
+
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+                transform: translateX(0);
+            }
+
+            to {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+        }
+
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+        }
+    </style>
+</head>
+
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen">
+    <!-- Header -->
+    <header class="firefly-gradient text-white shadow-xl">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <div class="w-12 h-12 bg-white bg-opacity-20 rounded-xl flex items-center justify-center">
+                        <span class="text-2xl">🔥</span>
+                    </div>
+                    <div>
+                        <h1 class="text-3xl font-bold">AnalyticsFirefly</h1>
+                        <p class="text-blue-100 text-sm">AI-Powered Data Analytics & Reporting Platform</p>
+                    </div>
+                </div>
+                <div class="hidden md:flex items-center space-x-8 text-sm">
+                    <div class="text-center bg-white bg-opacity-10 rounded-lg px-4 py-2 backdrop-blur-sm">
+                        <div class="text-2xl font-bold">1,247</div>
+                        <div class="text-blue-200">Files Analyzed</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Dashboard -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Welcome Section -->
+        <div class="mb-8">
+            <div class="glass-effect rounded-2xl p-8 card-shadow relative overflow-hidden">
+                <!-- Decorative background pattern -->
+                <div class="absolute inset-0 opacity-5">
+                    <div class="absolute top-4 left-4 w-20 h-20 bg-blue-500 rounded-full"></div>
+                    <div class="absolute top-12 right-8 w-16 h-16 bg-purple-500 rounded-full"></div>
+                    <div class="absolute bottom-8 left-12 w-12 h-12 bg-indigo-500 rounded-full"></div>
+                    <div class="absolute bottom-4 right-16 w-8 h-8 bg-pink-500 rounded-full"></div>
+                </div>
+                <div class="text-center relative z-10">
+                    <div
+                        class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl mb-6 shadow-lg">
+                        <span class="text-2xl">🚀</span>
+                    </div>
+                    <h2
+                        class="text-3xl font-bold text-gray-800 mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                        Transform Your Data Into Insights</h2>
+                    <p class="text-gray-600 max-w-2xl mx-auto text-lg leading-relaxed">Upload your Excel files and let
+                        our advanced AI analyze your data to generate comprehensive reports with actionable insights and
+                        beautiful visualizations.</p>
+                    <div class="flex justify-center items-center space-x-8 mt-8 text-sm text-gray-500">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                            <span>Secure Processing</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <div class="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+                            <span>AI-Powered Analysis</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <div class="w-2 h-2 bg-purple-500 rounded-full animate-pulse"></div>
+                            <span>Instant Reports</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Upload Section -->
+        <div class="grid lg:grid-cols-3 gap-8 mb-8">
+            <!-- Upload Card -->
+            <div class="lg:col-span-2">
+                <div class="bg-white rounded-2xl p-8 card-shadow relative overflow-hidden">
+                    <!-- Decorative elements -->
+                    <div
+                        class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full -translate-y-16 translate-x-16 opacity-50">
+                    </div>
+                    <div
+                        class="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-indigo-100 to-pink-100 rounded-full translate-y-12 -translate-x-12 opacity-50">
+                    </div>
+
+                    <div class="relative z-10">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="text-xl font-semibold text-gray-800 flex items-center">
+                                <div
+                                    class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center mr-3 shadow-lg">
+                                    <span class="text-white">📊</span>
+                                </div>
+                                Upload Your Data
+                            </h3>
+                            <div
+                                class="flex items-center space-x-2 text-xs text-gray-500 bg-gray-50 px-3 py-1 rounded-full">
+                                <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                                <span>Ready to analyze</span>
+                            </div>
+                        </div>
+
+                        <div id="uploadArea"
+                            class="upload-area rounded-xl p-12 text-center cursor-pointer relative overflow-hidden">
+                            <input type="file" id="fileInput" accept=".xlsx,.xls" class="hidden">
+
+                            <!-- Upload area background pattern -->
+                            <div class="absolute inset-0 opacity-5">
+                                <div class="absolute top-4 left-4 w-8 h-8 border-2 border-blue-400 rounded rotate-45">
+                                </div>
+                                <div class="absolute top-8 right-8 w-6 h-6 border-2 border-purple-400 rounded-full">
+                                </div>
+                                <div class="absolute bottom-6 left-8 w-4 h-4 bg-indigo-400 rounded"></div>
+                                <div class="absolute bottom-4 right-12 w-3 h-3 bg-pink-400 rounded-full"></div>
+                            </div>
+
+                            <div id="uploadContent" class="relative z-10">
+                                <div
+                                    class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-blue-100 to-purple-100 rounded-2xl mb-6 shadow-inner">
+                                    <span class="text-4xl">📈</span>
+                                </div>
+                                <h4 class="text-xl font-semibold text-gray-700 mb-3">Drop your Excel files here</h4>
+                                <p class="text-gray-500 mb-6 max-w-md mx-auto">Drag and drop your Excel files or click
+                                    to browse. Our AI will analyze your data and generate comprehensive insights.</p>
+
+                                <div class="flex items-center justify-center space-x-4 mb-6 text-sm text-gray-400">
+                                    <div class="flex items-center space-x-1">
+                                        <span>📊</span>
+                                        <span>.xlsx</span>
+                                    </div>
+                                    <div class="w-1 h-1 bg-gray-300 rounded-full"></div>
+                                    <div class="flex items-center space-x-1">
+                                        <span>📋</span>
+                                        <span>.xls</span>
+                                    </div>
+                                    <div class="w-1 h-1 bg-gray-300 rounded-full"></div>
+                                    <div class="flex items-center space-x-1">
+                                        <span>⚡</span>
+                                        <span>Up to 10MB</span>
+                                    </div>
+                                </div>
+
+                                <button id="browseBtn"
+                                    class="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-4 rounded-xl font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-xl shadow-lg">
+                                    <span class="flex items-center space-x-3">
+                                        <span class="text-lg">📁</span>
+                                        <span>Choose Excel Files</span>
+                                        <span class="text-sm opacity-75">or drag & drop</span>
+                                    </span>
+                                </button>
+                            </div>
+
+                            <div id="uploadProgress" class="hidden relative z-10">
+                                <div
+                                    class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-yellow-100 to-orange-100 rounded-2xl mb-6 shadow-inner">
+                                    <span class="text-4xl animate-bounce">⚡</span>
+                                </div>
+                                <h4 class="text-xl font-semibold text-gray-700 mb-4">Analyzing your data with AI...</h4>
+                                <div class="max-w-md mx-auto">
+                                    <div class="w-full bg-gray-200 rounded-full h-4 mb-4 overflow-hidden">
+                                        <div class="bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 h-4 rounded-full animate-pulse shadow-inner"
+                                            style="width: 70%"></div>
+                                    </div>
+                                    <div class="flex justify-between text-sm text-gray-500">
+                                        <span>Processing data...</span>
+                                        <span>70%</span>
+                                    </div>
+                                </div>
+                                <p class="text-sm text-gray-400 mt-4">Our AI is extracting insights from your data. This
+                                    may take a few moments.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Features Card -->
+            <div class="space-y-6">
+                <div class="bg-white rounded-2xl p-6 card-shadow relative overflow-hidden">
+                    <div
+                        class="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-green-100 to-emerald-100 rounded-full -translate-y-10 translate-x-10 opacity-50">
+                    </div>
+                    <div class="relative z-10">
+                        <div class="flex items-center mb-4">
+                            <div
+                                class="w-8 h-8 bg-gradient-to-r from-green-500 to-emerald-600 rounded-lg flex items-center justify-center mr-3 shadow-lg">
+                                <span class="text-white text-sm">✨</span>
+                            </div>
+                            <h4 class="font-semibold text-gray-800">AI Features</h4>
+                        </div>
+                        <ul class="space-y-4 text-sm text-gray-600">
+                            <li class="flex items-start space-x-3">
+                                <div
+                                    class="w-5 h-5 bg-green-100 rounded-full flex items-center justify-center mt-0.5 flex-shrink-0">
+                                    <span class="text-green-600 text-xs">✓</span>
+                                </div>
+                                <div>
+                                    <div class="font-medium text-gray-700">Automated Analysis</div>
+                                    <div class="text-xs text-gray-500">Smart data processing</div>
+                                </div>
+                            </li>
+                            <li class="flex items-start space-x-3">
+                                <div
+                                    class="w-5 h-5 bg-green-100 rounded-full flex items-center justify-center mt-0.5 flex-shrink-0">
+                                    <span class="text-green-600 text-xs">✓</span>
+                                </div>
+                                <div>
+                                    <div class="font-medium text-gray-700">Pattern Recognition</div>
+                                    <div class="text-xs text-gray-500">Identify hidden trends</div>
+                                </div>
+                            </li>
+                            <li class="flex items-start space-x-3">
+                                <div
+                                    class="w-5 h-5 bg-green-100 rounded-full flex items-center justify-center mt-0.5 flex-shrink-0">
+                                    <span class="text-green-600 text-xs">✓</span>
+                                </div>
+                                <div>
+                                    <div class="font-medium text-gray-700">Trend Analysis</div>
+                                    <div class="text-xs text-gray-500">Forecast future patterns</div>
+                                </div>
+                            </li>
+                            <li class="flex items-start space-x-3">
+                                <div
+                                    class="w-5 h-5 bg-green-100 rounded-full flex items-center justify-center mt-0.5 flex-shrink-0">
+                                    <span class="text-green-600 text-xs">✓</span>
+                                </div>
+                                <div>
+                                    <div class="font-medium text-gray-700">Professional Reports</div>
+                                    <div class="text-xs text-gray-500">Export-ready documents</div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl p-6 card-shadow relative overflow-hidden">
+                    <div
+                        class="absolute bottom-0 left-0 w-16 h-16 bg-gradient-to-tr from-blue-100 to-indigo-100 rounded-full translate-y-8 -translate-x-8 opacity-50">
+                    </div>
+                    <div class="relative z-10">
+                        <div class="flex items-center mb-4">
+                            <div
+                                class="w-8 h-8 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center mr-3 shadow-lg">
+                                <span class="text-white text-sm">📋</span>
+                            </div>
+                            <h4 class="font-semibold text-gray-800">Supported Formats</h4>
+                        </div>
+                        <div class="space-y-3 text-sm">
+                            <div
+                                class="flex items-center justify-between p-3 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-100">
+                                <div class="flex items-center space-x-2">
+                                    <span class="text-lg">📊</span>
+                                    <span class="text-gray-700 font-medium">Excel 2007+</span>
+                                </div>
+                                <span
+                                    class="text-blue-600 font-semibold bg-blue-100 px-2 py-1 rounded text-xs">.xlsx</span>
+                            </div>
+                            <div
+                                class="flex items-center justify-between p-3 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg border border-purple-100">
+                                <div class="flex items-center space-x-2">
+                                    <span class="text-lg">📋</span>
+                                    <span class="text-gray-700 font-medium">Excel Legacy</span>
+                                </div>
+                                <span
+                                    class="text-purple-600 font-semibold bg-purple-100 px-2 py-1 rounded text-xs">.xls</span>
+                            </div>
+                        </div>
+                        <div class="mt-4 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                            <div class="flex items-center justify-between text-xs text-gray-500">
+                                <span>Maximum file size</span>
+                                <span class="font-semibold text-gray-700">10 MB</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- New Process Steps Card -->
+                <div
+                    class="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-2xl p-6 card-shadow border border-indigo-100">
+                    <div class="flex items-center mb-4">
+                        <div
+                            class="w-8 h-8 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center mr-3 shadow-lg">
+                            <span class="text-white text-sm">🔄</span>
+                        </div>
+                        <h4 class="font-semibold text-gray-800">How It Works</h4>
+                    </div>
+                    <div class="space-y-3 text-sm">
+                        <div class="flex items-center space-x-3">
+                            <div
+                                class="w-6 h-6 bg-indigo-500 text-white rounded-full flex items-center justify-center text-xs font-bold">
+                                1</div>
+                            <span class="text-gray-600">Upload your Excel file</span>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <div
+                                class="w-6 h-6 bg-purple-500 text-white rounded-full flex items-center justify-center text-xs font-bold">
+                                2</div>
+                            <span class="text-gray-600">AI analyzes your data</span>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <div
+                                class="w-6 h-6 bg-pink-500 text-white rounded-full flex items-center justify-center text-xs font-bold">
+                                3</div>
+                            <span class="text-gray-600">Get instant insights</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div id="resultsSection" class="hidden">
+            <div class="slide-up">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-2xl font-bold text-gray-800 flex items-center bounce-in">
+                        <span class="mr-3 text-3xl">📊</span>
+                        Analysis Results
+                    </h3>
+                    <button id="downloadBtn"
+                        class="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white px-6 py-3 rounded-xl font-medium transition-all duration-300 transform hover:scale-105 flex items-center space-x-2 pulse-glow">
+                        <span>🖨️</span>
+                        <span>Print Report</span>
+                    </button>
+                </div>
+
+                <div class="document-container">
+                    <div class="document-content page-lines">
+                        <div id="reportContent" class="prose prose-lg max-w-none text-gray-800 leading-relaxed">
+                            <!-- Report content will be inserted here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="grid md:grid-cols-4 gap-8">
+                <!-- Brand Section -->
+                <div class="md:col-span-2">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div
+                            class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
+                            <span class="text-xl">🔥</span>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold">AnalyticsFirefly</h3>
+                            <p class="text-gray-400 text-sm">AI-Powered Analytics Platform</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-300 text-sm leading-relaxed max-w-md">
+                        Transform your data into actionable insights with our advanced AI analytics platform.
+                        Upload, analyze, and generate professional reports in minutes.
+                    </p>
+                    <div class="flex items-center space-x-4 mt-6">
+                        <a href="https://github.com/FireFlyDeveloper" target="_blank" rel="noopener noreferrer"
+                            class="flex items-center space-x-2 text-gray-300 hover:text-white transition-colors duration-300 bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded-lg">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+                            </svg>
+                            <span class="text-sm font-medium">FireFlyDeveloper</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div>
+                    <h4 class="font-semibold text-white mb-4">Quick Links</h4>
+                    <ul class="space-y-2 text-sm text-gray-300">
+                        <li><a href="#" class="hover:text-white transition-colors duration-300">How It Works</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors duration-300">Features</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors duration-300">Pricing</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors duration-300">Support</a></li>
+                    </ul>
+                </div>
+
+                <!-- Legal -->
+                <div>
+                    <h4 class="font-semibold text-white mb-4">Legal</h4>
+                    <ul class="space-y-2 text-sm text-gray-300">
+                        <li><a href="#" id="termsLink"
+                                class="hover:text-white transition-colors duration-300 cursor-pointer">Terms &
+                                Conditions</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors duration-300">Privacy Policy</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors duration-300">Data Security</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors duration-300">Contact</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Bottom Bar -->
+            <div class="border-t border-gray-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-gray-400 text-sm">
+                    © 2025 AnalyticsFirefly. All rights reserved.
+                </p>
+                <div class="flex items-center space-x-6 mt-4 md:mt-0 text-sm text-gray-400">
+                    <span class="flex items-center space-x-2">
+                        <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                        <span>All systems operational</span>
+                    </span>
+                    <span>Made with ❤️ by FireFlyDeveloper</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Terms & Conditions Modal -->
+    <div id="termsModal"
+        class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden shadow-2xl">
+            <div class="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-2xl font-bold">Terms & Conditions</h2>
+                    <button id="closeTerms" class="text-white hover:text-gray-200 transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div class="p-6 overflow-y-auto max-h-[calc(90vh-120px)]">
+                <div class="prose prose-gray max-w-none">
+                    <p class="text-gray-600 mb-6">Last updated: <strong>September 2025</strong></p>
+
+                    <h3 class="text-lg font-semibold text-gray-800 mb-3">1. Acceptance of Terms</h3>
+                    <p class="text-gray-600 mb-4">By accessing and using AnalyticsFirefly, you accept and agree to be
+                        bound by the terms and provision of this agreement.</p>
+
+                    <h3 class="text-lg font-semibold text-gray-800 mb-3">2. Use License</h3>
+                    <p class="text-gray-600 mb-4">Permission is granted to temporarily use AnalyticsFirefly for personal
+                        and commercial data analysis purposes. This license shall automatically terminate if you violate
+                        any of these restrictions.</p>
+
+                    <h3 class="text-lg font-semibold text-gray-800 mb-3">3. Data Privacy & Security</h3>
+                    <ul class="text-gray-600 mb-4 space-y-2">
+                        <li>• Your uploaded files are processed securely and are not stored permanently</li>
+                        <li>• We do not share your data with third parties</li>
+                        <li>• All data transmission is encrypted using industry-standard protocols</li>
+                        <li>• Generated reports are your intellectual property</li>
+                    </ul>
+
+                    <h3 class="text-lg font-semibold text-gray-800 mb-3">4. Acceptable Use</h3>
+                    <p class="text-gray-600 mb-4">You agree not to use the service for any unlawful purpose or to upload
+                        files containing malicious content, personal information of others without consent, or
+                        copyrighted material without permission.</p>
+
+                    <h3 class="text-lg font-semibold text-gray-800 mb-3">5. Service Availability</h3>
+                    <p class="text-gray-600 mb-4">While we strive for 99.9% uptime, we do not guarantee uninterrupted
+                        service. Maintenance windows and updates may temporarily affect availability.</p>
+
+                    <h3 class="text-lg font-semibold text-gray-800 mb-3">6. Limitation of Liability</h3>
+                    <p class="text-gray-600 mb-4">AnalyticsFirefly shall not be liable for any indirect, incidental,
+                        special, consequential, or punitive damages resulting from your use of the service.</p>
+
+                    <h3 class="text-lg font-semibold text-gray-800 mb-3">7. File Size & Format Limitations</h3>
+                    <ul class="text-gray-600 mb-4 space-y-2">
+                        <li>• Maximum file size: 10MB</li>
+                        <li>• Supported formats: .xlsx, .xls</li>
+                        <li>• Processing time may vary based on file complexity</li>
+                    </ul>
+
+                    <h3 class="text-lg font-semibold text-gray-800 mb-3">8. Modifications</h3>
+                    <p class="text-gray-600 mb-4">We reserve the right to revise these terms at any time without notice.
+                        By using this service, you agree to be bound by the current version of these terms.</p>
+
+                    <h3 class="text-lg font-semibold text-gray-800 mb-3">9. Contact Information</h3>
+                    <p class="text-gray-600 mb-4">For questions about these Terms & Conditions, please visit our GitHub
+                        repository: <a href="https://github.com/FireFlyDeveloper" target="_blank"
+                            rel="noopener noreferrer"
+                            class="text-blue-600 hover:text-blue-800">github.com/FireFlyDeveloper</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const browseBtn = document.getElementById('browseBtn');
+        const uploadContent = document.getElementById('uploadContent');
+        const uploadProgress = document.getElementById('uploadProgress');
+        const resultsSection = document.getElementById('resultsSection');
+        const reportContent = document.getElementById('reportContent');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const termsModal = document.getElementById('termsModal');
+        const termsLink = document.getElementById('termsLink');
+        const closeTerms = document.getElementById('closeTerms');
+
+        let currentReportData = '';
+
+        // Terms modal handlers
+        termsLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            termsModal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        });
+
+        closeTerms.addEventListener('click', () => {
+            termsModal.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        });
+
+        // Close modal when clicking outside
+        termsModal.addEventListener('click', (e) => {
+            if (e.target === termsModal) {
+                termsModal.classList.add('hidden');
+                document.body.style.overflow = 'auto';
+            }
+        });
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !termsModal.classList.contains('hidden')) {
+                termsModal.classList.add('hidden');
+                document.body.style.overflow = 'auto';
+            }
+        });
+
+        // File upload handlers
+        browseBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            fileInput.click();
+        });
+
+        uploadArea.addEventListener('click', (e) => {
+            // Don't trigger if clicking on the browse button or during upload
+            if (e.target === browseBtn || uploadProgress.classList.contains('hidden') === false) {
+                return;
+            }
+            fileInput.click();
+        });
+
+        // Drag and drop handlers
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFileUpload(files[0]);
+            }
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleFileUpload(e.target.files[0]);
+            }
+        });
+
+        // Print button handler
+        downloadBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+
+            console.log('Print button clicked');
+            console.log('Current report data exists:', !!currentReportData);
+
+            if (!currentReportData) {
+                showError("No report data available. Please upload a file first.");
+                return;
+            }
+
+            try {
+                console.log('Opening print dialog...');
+                printReport();
+                showSuccess("Print dialog opened! Choose 'Save as PDF' to create a PDF file.");
+            } catch (error) {
+                console.error('Print error:', error);
+                showError(`Failed to open print dialog: ${error.message}`);
+            }
+        });
+
+        function showResults(markdownContent) {
+            // Convert markdown to HTML for display
+            const htmlContent = marked.parse(markdownContent);
+            reportContent.innerHTML = htmlContent;
+
+            // Style tables for better display
+            const tables = reportContent.querySelectorAll('table');
+            tables.forEach(table => {
+                table.className = 'w-full border-collapse border border-gray-300 mt-4 mb-4';
+                const cells = table.querySelectorAll('th, td');
+                cells.forEach(cell => {
+                    cell.className = 'border border-gray-300 px-4 py-2';
+                });
+                const headers = table.querySelectorAll('th');
+                headers.forEach(header => {
+                    header.className += ' bg-gray-100 font-semibold';
+                });
+            });
+
+            // Style headers for proper bold formatting
+            const h1Elements = reportContent.querySelectorAll('h1');
+            h1Elements.forEach(h1 => {
+                h1.className = 'text-3xl font-bold text-gray-800 mb-6 mt-8';
+            });
+
+            const h2Elements = reportContent.querySelectorAll('h2');
+            h2Elements.forEach(h2 => {
+                h2.className = 'text-2xl font-bold text-gray-800 mb-4 mt-6';
+            });
+
+            const h3Elements = reportContent.querySelectorAll('h3');
+            h3Elements.forEach(h3 => {
+                h3.className = 'text-xl font-bold text-gray-700 mb-3 mt-5';
+            });
+
+            const h4Elements = reportContent.querySelectorAll('h4');
+            h4Elements.forEach(h4 => {
+                h4.className = 'text-lg font-bold text-gray-700 mb-2 mt-4';
+            });
+
+            const h5Elements = reportContent.querySelectorAll('h5');
+            h5Elements.forEach(h5 => {
+                h5.className = 'text-base font-bold text-gray-700 mb-2 mt-3';
+            });
+
+            const h6Elements = reportContent.querySelectorAll('h6');
+            h6Elements.forEach(h6 => {
+                h6.className = 'text-sm font-bold text-gray-700 mb-2 mt-3';
+            });
+
+            // Show results section with animation
+            resultsSection.classList.remove('hidden');
+            resultsSection.scrollIntoView({ behavior: 'smooth' });
+
+            // Store report data for PDF generation
+            currentReportData = markdownContent;
+        }
+
+        function printReport() {
+            console.log('🖨️ Preparing report for printing (iframe) ...');
+
+            if (typeof marked === 'undefined') {
+                console.warn('marked is not defined. Aborting print.');
+                return;
+            }
+
+            // Convert markdown to HTML (keep attributes like src on images)
+            const htmlContent = marked.parse(currentReportData || '');
+
+            // light cleanup: remove scripts (safety), but preserve image/src and structure
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = htmlContent;
+            // remove script tags if any
+            tempDiv.querySelectorAll('script').forEach(s => s.remove());
+            const cleanHTML = tempDiv.innerHTML;
+
+            // Create hidden iframe
+            const iframe = document.createElement('iframe');
+            iframe.style.position = 'fixed';
+            iframe.style.right = '0';
+            iframe.style.bottom = '0';
+            iframe.style.width = '0';
+            iframe.style.height = '0';
+            iframe.style.border = '0';
+            iframe.style.visibility = 'hidden';
+            iframe.id = 'print-iframe';
+            document.body.appendChild(iframe);
+
+            // Build the iframe document
+            const doc = iframe.contentWindow.document;
+            doc.open();
+            doc.write('<!doctype html><html><head><meta charset="utf-8">');
+
+            // Preserve base so relative URLs for images/css still work
+            doc.write(`<base href="${location.href}">`);
+
+            // Copy existing <link rel="stylesheet"> and <style> tags into iframe head
+            // We clone outerHTML so links/styles are re-used in the iframe (works for same-origin CSS).
+            document.querySelectorAll('link[rel="stylesheet"], style').forEach(node => {
+                try {
+                    doc.write(node.outerHTML);
+                } catch (e) {
+                    /* ignore clone errors (rare) */
+                }
+            });
+
+            // Add print-specific CSS to avoid blanks and control page breaks
+            doc.write(`<style>
+    @page { size: auto; margin: 10mm; }
+    html, body {
+        margin: 0; padding: 0;
+        background: white;
+        color: #111;
+        -webkit-print-color-adjust: exact;
+        font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    }
+
+    #printableReport {
+        position: relative;
+        width: 100%;
+        background: white !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+        margin: 0 !important;
+        padding: 20px !important;
+    }
+
+    #printableReport h1 {
+        color: #1f2937 !important;
+        font-size: 24px !important;
+        font-weight: 700 !important;
+        margin-bottom: 16px !important;
+    }
+
+    #printableReport h2 {
+        color: #374151 !important;
+        font-size: 20px !important;
+        font-weight: 600 !important;
+        margin-bottom: 12px !important;
+    }
+
+    #printableReport h3 {
+        color: #4b5563 !important;
+        font-size: 16px !important;
+        font-weight: 600 !important;
+        margin-bottom: 8px !important;
+    }
+
+    #printableReport table {
+        border-collapse: collapse !important;
+        width: 100% !important;
+        margin: 12px 0 !important;
+    }
+
+    #printableReport th,
+    #printableReport td {
+        border: 1px solid #d1d5db !important;
+        padding: 8px !important;
+        text-align: left !important;
+    }
+
+    #printableReport th {
+        background-color: #f3f4f6 !important;
+        font-weight: bold !important;
+    }
+
+    .print-header {
+        text-align: center;
+        margin-bottom: 30px;
+        border-bottom: 2px solid #e5e7eb;
+        padding-bottom: 20px;
+    }
+
+    /* Prevent page-break issues */
+    table, tr, td, th { page-break-inside: avoid; break-inside: avoid; }
+    img { max-width: 100%; height: auto; }
+</style>`);
+
+            doc.write('</head><body>');
+            // Add a wrapper so you can style or add header/footer easily
+            doc.write('<div id="printableReport">');
+
+            doc.write(`<div class="print-header"><h1>Report</h1></div>`);
+
+            // Insert the cleaned content
+            doc.write(`<div id="printableContent">${cleanHTML}</div>`);
+            doc.write('</div>'); // close printableReport
+            doc.write('</body></html>');
+            doc.close();
+
+            // Wait for iframe resources (images, fonts, css) to load before printing
+            const iframeWindow = iframe.contentWindow;
+            const iframeDoc = iframeWindow.document;
+
+            // Helper: wait for images to finish (or timeout)
+            const imgs = Array.from(iframeDoc.images || []);
+            let loaded = 0;
+            const total = imgs.length;
+            const finish = () => {
+                try {
+                    // Focus before print to improve reliability in some browsers
+                    iframeWindow.focus();
+                    // Trigger print on the iframe's window
+                    iframeWindow.print();
+                } catch (err) {
+                    console.error('Print failed:', err);
+                } finally {
+                    // Clean up iframe after a short delay so print dialog can access it
+                    setTimeout(() => {
+                        try { document.body.removeChild(iframe); } catch (e) { /* ignore */ }
+                    }, 1000);
+                }
+            };
+
+            if (total === 0) {
+                // No images to wait for — print immediately
+                // Use requestAnimationFrame to ensure styles have applied
+                requestAnimationFrame(finish);
+            } else {
+                const onLoadedOrError = () => {
+                    loaded++;
+                    if (loaded >= total) finish();
+                };
+                imgs.forEach(img => {
+                    // if already complete, count it
+                    if (img.complete) {
+                        onLoadedOrError();
+                    } else {
+                        img.addEventListener('load', onLoadedOrError, { once: true });
+                        img.addEventListener('error', onLoadedOrError, { once: true });
+                    }
+                });
+                // safety timeout: if images take too long, print anyway
+                setTimeout(() => {
+                    if (loaded < total) {
+                        console.warn('Some iframe images did not finish loading — printing anyway.');
+                        finish();
+                    }
+                }, 5000);
+            }
+
+            console.log('✅ Print content prepared in iframe');
+        }
+
+
+        function showError(message) {
+            // Create error notification
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'fixed top-4 right-4 bg-gradient-to-r from-red-500 to-pink-500 text-white px-6 py-4 rounded-xl shadow-2xl z-50 bounce-in border-l-4 border-red-300';
+            errorDiv.innerHTML = `
+                <div class="flex items-center">
+                    <div class="mr-3 text-xl">❌</div>
+                    <div>
+                        <div class="font-semibold">Error</div>
+                        <div class="text-sm opacity-90">${message}</div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(errorDiv);
+
+            // Remove after 5 seconds with fade out
+            setTimeout(() => {
+                errorDiv.style.animation = 'fadeOut 0.3s ease-out forwards';
+                setTimeout(() => errorDiv.remove(), 300);
+            }, 5000);
+        }
+
+        function showSuccess(message) {
+            // Create success notification
+            const successDiv = document.createElement('div');
+            successDiv.className = 'fixed top-4 right-4 bg-gradient-to-r from-green-500 to-emerald-500 text-white px-6 py-4 rounded-xl shadow-2xl z-50 bounce-in border-l-4 border-green-300';
+            successDiv.innerHTML = `
+                <div class="flex items-center">
+                    <div class="mr-3 text-xl">✅</div>
+                    <div>
+                        <div class="font-semibold">Success</div>
+                        <div class="text-sm opacity-90">${message}</div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(successDiv);
+
+            // Remove after 3 seconds with fade out
+            setTimeout(() => {
+                successDiv.style.animation = 'fadeOut 0.3s ease-out forwards';
+                setTimeout(() => successDiv.remove(), 300);
+            }, 3000);
+        }
+
+        async function handleFileUpload(file) {
+            // Reset file input to allow re-uploading the same file
+            fileInput.value = '';
+
+            // Show success notification
+            showSuccess(`File "${file.name}" uploaded successfully!`);
+
+            // Show progress
+            uploadContent.classList.add('hidden');
+            uploadProgress.classList.remove('hidden');
+
+            const formData = new FormData();
+            formData.append("file", file);             // the actual file
+            formData.append("fileName", file.name);    // the original file name
+            formData.append("fileType", file.type);    // the MIME type
+
+            try {
+                const response = await fetch("https://fireflylab-api.onrender.com/webhook-test/3287b7e2-fae5-45cc-98b4-28ec3242412e", {
+                    method: "POST",
+                    body: formData
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+
+                    if (result.success === "yes") {
+                        showSuccess("Analysis complete! Your report is ready.");
+                        showResults(result.report);
+                    } else {
+                        showError("Analysis failed. Please ensure your file is a valid Excel file.");
+                    }
+                } else {
+                    showError(`Upload failed (Status: ${response.status}). Please check your connection and try again.`);
+                }
+            } catch (error) {
+                showError(`Connection error: ${error.message}. Please check your network and try again.`);
+            } finally {
+                // Always hide progress and show upload content again
+                uploadProgress.classList.add('hidden');
+                uploadContent.classList.remove('hidden');
+            }
+        }
+    </script>
+    <script>(function () { function c() { var b = a.contentDocument || a.contentWindow.document; if (b) { var d = b.createElement('script'); d.innerHTML = "window.__CF$cv$params={r:'983a63742215fec5',t:'MTc1ODYzNDE0MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);"; b.getElementsByTagName('head')[0].appendChild(d) } } if (document.body) { var a = document.createElement('iframe'); a.height = 1; a.width = 1; a.style.position = 'absolute'; a.style.top = 0; a.style.left = 0; a.style.border = 'none'; a.style.visibility = 'hidden'; document.body.appendChild(a); if ('loading' !== document.readyState) c(); else if (window.addEventListener) document.addEventListener('DOMContentLoaded', c); else { var e = document.onreadystatechange || function () { }; document.onreadystatechange = function (b) { e(b); 'loading' !== document.readyState && (document.onreadystatechange = e, c()) } } } })();</script>
+</body>
+
+</html>
